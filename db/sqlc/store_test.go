@@ -17,14 +17,12 @@ func TestTranferTx(t *testing.T) {
 	// * Run n concurrent transactions
 	errs := make(chan error)
 	results := make(chan TransferTxResult)
-	n := 3
+	n := 5
 	amount := int64(10)
 
 	for i := 0; i < n; i++ {
-		txName := fmt.Sprintf("tx %d", i+1)
 		go func() {
-			ctx := context.WithValue(context.Background(), txKey, txName)
-			result, err := store.TransfersTx(ctx, TransferTxParam{
+			result, err := store.TransfersTx(context.Background(), TransferTxParam{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -113,4 +111,6 @@ func TestTranferTx(t *testing.T) {
 
 	require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)
 	require.Equal(t, account2.Balance+int64(n)*amount, updatedAccount2.Balance)
+
+	// ^ Deadlock xảy ra khi một câu query từ một process id (pid) đang cố lấy 1 lock id mà id này đã được dùng ở một (pid) khác.
 }

@@ -9,6 +9,31 @@ import (
 	"context"
 )
 
+const addAccountBalance = `-- name: AddAccountBalance :one
+UPDATE accounts
+SET balance = balance + $1
+WHERE id = $2
+RETURNING id, owner, balance, currency, created_at
+`
+
+type AddAccountBalanceParams struct {
+	Amount int64 `json:"amount"`
+	ID     int64 `json:"id"`
+}
+
+func (q *Queries) AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Accounts, error) {
+	row := q.db.QueryRowContext(ctx, addAccountBalance, arg.Amount, arg.ID)
+	var i Accounts
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createAccount = `-- name: CreateAccount :one
 INSERT INTO accounts(owner, balance, currency)
 VALUES($1, $2, $3)
@@ -51,6 +76,7 @@ WHERE id = $1
 LIMIT 1
 `
 
+// ^ từ khoá UPDATE đễ chặn những transaction khác đang cố truy cập vào cùng 1 record trong bảng (phải chờ transaction này xong thì transaction kia mới vào đc, còn không sẽ bị chặn).
 func (q *Queries) GetAccount(ctx context.Context, id int64) (Accounts, error) {
 	row := q.db.QueryRowContext(ctx, getAccount, id)
 	var i Accounts
@@ -68,7 +94,7 @@ const getAccountForUpdate = `-- name: GetAccountForUpdate :one
 SELECT id, owner, balance, currency, created_at
 FROM accounts
 WHERE id = $1
-LIMIT 1 FOR
+LIMIT 1 FOR NO KEY
 UPDATE
 `
 
