@@ -10,3 +10,6 @@
 +-----------------------+------------------+----------------+-----------------+--------------+
 | Serialization anomaly |         O        |        O       |        O        |       X      |
 +-----------------------+------------------+----------------+-----------------+--------------+
+10. Github action
+    To use Github action we need define workflow. Add .yml file to repository
+    - Trigger (event, schedule, manually) ---> WORKFLOW ---> JOB (Job 1, Job 2, Job 3) ---> STEP (Step 1, Step 2, Step 3) ---> ACTION (Action 1, Action 2, Action 3)
