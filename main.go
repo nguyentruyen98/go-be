@@ -2,11 +2,13 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/lib/pq"
 	"github.com/nguyentruyen98/go-be/api"
 	db "github.com/nguyentruyen98/go-be/db/sqlc"
+	"github.com/nguyentruyen98/go-be/util"
 )
 
 const (
@@ -16,6 +18,13 @@ const (
 )
 
 func main() {
+	config, err := util.LoadConfig(".")
+
+	if err != nil {
+		log.Fatal("Cannot load config: ", err)
+	}
+	fmt.Println(config.DBDriver)
+
 	conn, err := sql.Open(dbDriver, dbSource)
 	if err != nil {
 		log.Fatal("Cannot connect to database: ", err)
