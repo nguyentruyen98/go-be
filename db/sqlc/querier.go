@@ -13,12 +13,14 @@ type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Accounts, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entries, error)
 	CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfers, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (Users, error)
 	DeleteAccount(ctx context.Context, id int64) error
 	// ^ từ khoá UPDATE đễ chặn những transaction khác đang cố truy cập vào cùng 1 record trong bảng (phải chờ transaction này xong thì transaction kia mới vào đc, còn không sẽ bị chặn).
 	GetAccount(ctx context.Context, id int64) (Accounts, error)
 	GetAccountForUpdate(ctx context.Context, id int64) (Accounts, error)
 	GetEntry(ctx context.Context, id int64) (Entries, error)
 	GetTransfer(ctx context.Context, id int64) (Transfers, error)
+	GetUser(ctx context.Context, username string) (Users, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Accounts, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entries, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfers, error)
