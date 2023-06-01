@@ -66,3 +66,21 @@ docker run --name simplebank_app --network bank-network -p 8080:8080 -e GIN_MODE
 
 
 
+## K9s
+
+1. Connect to AWS EKS cluter
+
+```
+aws eks update-kubeconfig --name simple-bank --region ap-southeast-1
+```
+-   Get the services that are running on the cluster
+
+```
+kubectl get service
+```
+
+-   Get list of running pods
+
+```
+kubectl get pods
+```
